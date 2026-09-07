@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chore Tracker</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+      max-width: 46rem; margin: 0 auto; padding: 2rem 1rem;
+    }
+    h1 { margin-bottom: 0.25rem; }
+    .today { color: #666; margin-top: 0; }
+    section { margin-top: 2rem; }
+    h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    h2.overdue { color: #c0392b; }
+    ul { list-style: none; padding: 0; }
+    li {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 0; border-bottom: 1px solid #ddd;
+    }
+    .chore { font-weight: 600; }
+    .who { color: #666; }
+    .due { margin-left: auto; color: #666; font-variant-numeric: tabular-nums; }
+    button { padding: 0.35rem 0.8rem; cursor: pointer; }
+    .empty { color: #888; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Chore Tracker</h1>
+  <p class="today">{{ today }}</p>
+
+  <section>
+    <h2 class="overdue">Overdue</h2>
+    {% if overdue %}
+      <ul>
+        {% for occurrence in overdue %}
+          <li>
+            <span class="chore">{{ occurrence.chore.name }}</span>
+            <span class="who">{{ occurrence.assigned_to.name }}</span>
+            <span class="due">{{ occurrence.due_on }}</span>
+            <form method="post" action="{% url 'complete_occurrence' occurrence.id %}">
+              {% csrf_token %}
+              <button type="submit">Done</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">Nothing overdue.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Due today</h2>
+    {% if due_today %}
+      <ul>
+        {% for occurrence in due_today %}
+          <li>
+            <span class="chore">{{ occurrence.chore.name }}</span>
+            <span class="who">{{ occurrence.assigned_to.name }}</span>
+            <span class="due">{{ occurrence.due_on }}</span>
+            <form method="post" action="{% url 'complete_occurrence' occurrence.id %}">
+              {% csrf_token %}
+              <button type="submit">Done</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">Nothing due today.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Upcoming</h2>
+    {% if upcoming %}
+      <ul>
+        {% for occurrence in upcoming %}
+          <li>
+            <span class="chore">{{ occurrence.chore.name }}</span>
+            <span class="who">{{ occurrence.assigned_to.name }}</span>
+            <span class="due">{{ occurrence.due_on }}</span>
+            <form method="post" action="{% url 'complete_occurrence' occurrence.id %}">
+              {% csrf_token %}
+              <button type="submit">Done</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">Nothing scheduled.</p>
+    {% endif %}
+  </section>
+</body>
+</html>
